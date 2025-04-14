@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator Kolam</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+  <div class="bg-white shadow-lg rounded-2xl p-6 w-full max-w-md">
+    <h2 class="text-2xl font-semibold mb-4 text-center">Kalkulator Luas Kolam</h2>
+
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium">Debit Air (liter/detik):</label>
+        <input type="number" id="debit" class="mt-1 w-full p-2 border rounded" step="0.01">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Durasi Aliran per Hari (jam):</label>
+        <input type="number" id="durasi" class="mt-1 w-full p-2 border rounded">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Periode Penampungan (hari):</label>
+        <input type="number" id="periode" class="mt-1 w-full p-2 border rounded">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Kedalaman Kolam (meter):</label>
+        <input type="number" id="kedalaman" class="mt-1 w-full p-2 border rounded" step="0.1">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Kehilangan/Penguapan (%):</label>
+        <input type="number" id="kehilangan" class="mt-1 w-full p-2 border rounded" value="0" step="1">
+      </div>
+
+      <button onclick="hitung()" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+        Hitung Luas Kolam
+      </button>
+
+      <div id="hasil" class="mt-4 text-sm bg-gray-100 p-3 rounded hidden"></div>
+    </div>
+  </div>
+
+  <script>
+    function hitung() {
+      const debit = parseFloat(document.getElementById('debit').value) / 1000;
+      const durasi = parseFloat(document.getElementById('durasi').value);
+      const periode = parseFloat(document.getElementById('periode').value);
+      const kedalaman = parseFloat(document.getElementById('kedalaman').value);
+      const kehilangan = parseFloat(document.getElementById('kehilangan').value);
+
+      const hasilDiv = document.getElementById('hasil');
+
+      if (isNaN(debit) || isNaN(durasi) || isNaN(periode) || isNaN(kedalaman)) {
+        hasilDiv.innerText = 'Mohon isi semua kolom dengan benar.';
+        hasilDiv.classList.remove('hidden');
+        return;
+      }
+
+      const waktuTotalDetik = durasi * 3600 * periode;
+      let volume = debit * waktuTotalDetik;
+
+      const faktorKehilangan = (100 - kehilangan) / 100;
+      volume = volume / faktorKehilangan;
+
+      const luasKolam = volume / kedalaman;
+
+      hasilDiv.innerHTML =
+        `<strong>Total Volume Air:</strong> ${volume.toFixed(2)} m³<br>
+         <strong>Luas Kolam yang Dibutuhkan:</strong> ${luasKolam.toFixed(2)} m²`;
+      hasilDiv.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
